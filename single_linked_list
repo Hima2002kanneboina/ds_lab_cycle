@@ -1,0 +1,234 @@
+#include<stdio.h>
+#include <stdlib.h>
+struct slist
+{
+    int d;
+    struct slist *next;
+};
+typedef struct slist node;
+node *create(node *first)
+{
+    node * pre,*nw=first;
+    int x;
+    printf("enter data (enter -1 to stop)\n");
+    scanf("%d",&x);
+    while(x!=-1)
+    {
+        nw=(node *)malloc(sizeof(node));
+        nw->d=x;
+        if (first==NULL)
+        {
+            first=nw;
+            pre=nw;
+        }
+        else
+        {
+            pre->next=nw;
+            pre=nw;
+        }
+        printf("enter elements(enter -1 to stop)\n");
+        scanf("%d",&x);
+    }
+    return first;
+}
+void display(node *first)
+{
+    node *temp=first;
+    if(first==NULL)
+    {
+        printf("no list to print");
+    }
+    while(temp!=NULL)
+    {
+        printf("%3d",temp->d);
+        temp=temp->next;
+    }
+    printf("   NULL");
+}
+node *insertion_at_starting(node *first,int x)
+{
+    node *new;
+    new=(node *)malloc(sizeof(node));
+    new->d=x;
+    new->next=first;
+    first=new;
+    return first;
+}
+node *insert_at_end(node *first,int x)
+{
+    node *temp,*new;
+    new=(node *)malloc(sizeof(node));
+    new->d=x;
+    temp=first;
+    if (first==NULL)
+    {
+        first=new;
+    }
+    while(temp->next!=NULL)
+    {
+        temp=temp->next;
+    }
+    temp->next=new;
+    return first;
+}
+node *insert_at_pos(node *first,int x,int pos,int n)
+{
+    int i;
+    node *temp;
+    temp=first;
+    node *new;
+    if (pos>0 && pos<n)
+    {
+        new=(node *)malloc(sizeof(node));
+        new->d=x;
+        for(i=0;i<pos-1;i++)
+        {
+            temp=temp->next;
+        }
+        new->next=temp->next;
+        temp->next=new;
+    }
+    return first;
+}
+int count(node *first)
+{
+    node *temp;
+    int c=0;
+    temp=first;
+    while(temp!=NULL)
+    {   c++;
+        temp=temp->next;
+    }
+    return c;
+}
+node * del(node *first,int pos,int n)
+{
+    int i;
+    node * temp,*temp1;
+    temp=first;
+    if (first==NULL)
+    {
+        printf("no list to del");
+    }
+    if (pos>0&&pos<n)
+    {
+    for (i=0;i<pos-1;i++)
+    {
+        temp=temp->next;
+    }
+    temp1=temp->next;
+    temp->next=temp->next->next;
+    free(temp1);
+    }
+    return first;
+}
+void search(node *first,int ele)
+{
+    int flag=0;
+    node *temp=first;
+    while(temp!=NULL)
+    {
+        if(temp->d==ele)
+        {
+            flag=1;
+            break;
+        }
+        else
+        {
+            temp=temp->next;
+        }
+    }
+    if (flag==1)
+    {
+        printf("ele is found");
+    }
+    else
+    {
+        printf("ele is not found");
+    }
+}
+node * reverse(node *first)
+{
+    node *present,*prev,*save;
+    present=first;
+    prev=NULL;
+    while(present!=NULL)
+    {
+        save=present->next;
+        present->next=prev;
+        prev=present;
+        present=save;
+    }
+    first=prev;
+    return first;
+}
+node *sort(node *first)
+{
+    node *temp1,*temp2;
+    int new;
+    for(temp1=first;temp1->next!=NULL;temp1=temp1->next)
+    {
+        for(temp2=temp1->next;temp2!=NULL;temp2=temp2->next)
+        {
+            if(temp1->d>temp2->d)
+            {
+                new=temp2->d;
+                temp2->d=temp1->d;
+                temp1->d=new;
+            }
+        }
+    }
+    return first;
+}
+
+void main ()
+{
+    int x,n,pos,ele,c;
+    node * head=NULL;
+    head=create(head);
+
+    while(1)
+    { 
+        display(head);
+        printf("enter  choice  \n 1.display\n.2.search\n 3.count\n4.insertion_at_starting\n5.insert_at_end\n");
+        printf("6.insert_at_pos\n7.delete\n8.sort\n9.reverse\n10.exit");
+        scanf("%d",&c);
+        switch(c)
+        {
+            case 1:  display(head);
+                     break;
+            case 2: printf("enter ele to search");
+                    scanf("%d",&ele);
+                    search(head,ele);
+                    break;
+            case 3:n=count(head);
+                   printf("count=%d",n);
+                    break;
+            case 4:printf("enter data to add\n");
+                   scanf(" %d",&x);
+                   head=insertion_at_starting(head,x);
+                   break;
+                   
+            case 5:printf("enter data to add\n");
+                   scanf("%d",&x);
+                   head=insert_at_end(head,x);
+                   break;
+            case 6:printf("enter data to add and pos\n");
+                   scanf("%d %d",&x,&pos);
+                  head=insert_at_pos(head,x,pos,n);
+                  break;
+            case 7:printf("enter element to delete");
+                   scanf("%d",&pos);
+                   n=count(head);
+                  
+                   head=del(head,pos,n);
+                   break;
+            case 8: head=sort(head);
+                    break;
+            case 9: head=reverse(head);
+                    break;
+            case 10:exit(0);
+            default:printf("check your choice");
+        }
+    }
+}
